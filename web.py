@@ -33,18 +33,5 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 if __name__ == '__main__':
     HOST, PORT = '127.0.0.1', 9000
 
-    server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
-
-    server =
-
-    # server.serve_forever()
-
     with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
         server.serve_forever()
-
-
-
-    # server.shutdown()
-
-    # print(server.shutdown())
-    # webbrowser.open('dist/index.html')
