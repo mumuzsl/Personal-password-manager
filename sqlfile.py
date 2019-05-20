@@ -1,5 +1,7 @@
 import sqlite3
+import json
 
+# 把SQL语句放入sql字典中，方便多次使用
 sql = {
     'ct': 'CREATE TABLE SERCET'
           '(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
@@ -12,7 +14,8 @@ sql = {
           'VALUES',
     'se': 'SELECT * FROM SERCET',
     'up': 'UPDATE SERCET'
-          'SET'
+          'SET',
+    'sc': 'select * from sqlite_master where type="table"'
 }
 
 dic = {
@@ -50,11 +53,24 @@ def getInsert(*args, p='', a='', pw=''):
 
 
 def runsql(state):
+    """state: sql语句"""
+
+    # 连接数据库文件，如果不存在，自动创建
     conn = sqlite3.connect('sercet.db')
     c = conn.cursor()
-    c.execute(state)
+
+    # 运行sql语句，并得到sqlite.cousor对象
+    cursor = c.execute(state)
+
+    # 读取cursor中的内容
+    for i in cursor:
+        print(i)
+
     conn.commit()
+    # 关闭连接
     conn.close()
+
+    return cursor
     pass
 
 
@@ -82,7 +98,7 @@ def select(place=''):
     conn = sqlite3.connect('sercet.db')
     c = conn.cursor()
 
-    # print(getSelect(place))
+    print(getSelect(place))
 
     cursor = c.execute(getSelect(place))
 
@@ -90,10 +106,13 @@ def select(place=''):
     #     print(row)
     rows = [{'id': i[0], 'p': i[1], 'a': i[2], 'pw': i[3]} for i in cursor]
 
+    # _json = json.dumps([{"data": rows}])
+    _json = json.dumps(rows)
+
     conn.commit()
     conn.close()
 
-    return rows
+    return _json
     pass
 
 
@@ -102,8 +121,9 @@ def main():
     # print(getInsert('a', 'a', 'a'))
     # runsql(sql.get('ct'))
     # print(type(select()))
-    # print(select())
-    runsql(getUpdate(15, 2, 'Coolzmumu@163.com'))
+    print(select())
+    # runsql(getUpdate(15, 2, 'Coolzmumu@163.com'))
+    # runsql(sql.get('sc'))
     pass
 
 
